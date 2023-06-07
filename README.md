@@ -12,19 +12,11 @@ This is a simple interpreter script written in C. It interprets and executes a p
 
 To use the interpreter, follow these steps:
 
-1. Compile the script using a C compiler:
+Compile the script using a C compiler:
 
    ```bash
    gcc interpreter.c -o interpreter
    ```
-
-2. Run the interpreter, specifying the filename of the program you want to execute:
-
-   ```bash
-   ./interpreter <filename>
-   ```
-
-   Replace `<filename>` with the path to your program file.
 
 ## Program Language
 
