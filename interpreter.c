@@ -2,6 +2,30 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef _WIN32
+	#include <conio.h>
+#else
+	#include <stdio.h>
+	#include <termios.h>
+	#include <unistd.h>
+
+	int getch(void) {
+		struct termios oldattr, newattr;
+		int ch;
+
+		tcgetattr(STDIN_FILENO, &oldattr);
+		newattr = oldattr;
+		newattr.c_lflag &= ~(ICANON | ECHO);
+		tcsetattr(STDIN_FILENO, TCSANOW, &newattr);
+
+		ch = getchar();
+
+		tcsetattr(STDIN_FILENO, TCSANOW, &oldattr);
+
+		return ch;
+	}
+#endif
+
 #define MAX_CODE_LENGTH 1000
 #define MAX_STACK_SIZE 1000
 
@@ -68,13 +92,11 @@ void execute(Program *program) {
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
 		printf("Usage: ./interpreter <filename>\n");
-		return 1;
 	}
 
 	FILE *file = fopen(argv[1], "r");
 	if (!file) {
 		printf("Failed to open the file.\n");
-		return 1;
 	}
 
 	Program program;
@@ -83,6 +105,9 @@ int main(int argc, char *argv[]) {
 	fclose(file);
 
 	execute(&program);
+
+	printf("Press any key to exit...");
+	getch(); // Wait for user input
 
 	return 0;
 }
